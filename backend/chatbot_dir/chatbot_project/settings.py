@@ -30,7 +30,10 @@ DEBUG = False
 ALLOWED_HOSTS = [
     "mjproapps.com",
     "www.mjproapps.com",
+    "staging.mjproapps.com",
+    "api-staging.mjproapps.com",
     "3.107.8.190",
+    "54.203.213.180",
     "156.67.222.95",
     "localhost",
     "127.0.0.1",
