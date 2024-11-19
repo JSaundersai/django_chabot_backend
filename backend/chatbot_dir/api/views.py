@@ -27,38 +27,43 @@ from .serializers import (
 
 class UserInputView(APIView):
     def post(self, request):
-        serializer = UserInputSerializer(data=request.data)
-        if serializer.is_valid():
-            prompt = serializer.validated_data["prompt"]
-            user_id = serializer.validated_data["user_id"]
+        try:
+            serializer = UserInputSerializer(data=request.data)
+            if serializer.is_valid():
+                prompt = serializer.validated_data["prompt"]
+                user_id = serializer.validated_data["user_id"]
 
-            # added the translation here
-            cleaned_prompt = translate_and_clean(prompt)
+                # added the translation here
+                cleaned_prompt = translate_and_clean(prompt)
 
-            generation = generate_answer(cleaned_prompt)
+                generation = generate_answer(cleaned_prompt)
 
-            response_data = {
-                "user_id": user_id,
-                "prompt": prompt,
-                "cleaned_prompt": cleaned_prompt,
-                "generation": generation["generation"],
-                "translations": generation["translations"],
-                "usage": generation["usage"],
-            }
-
-            save_interaction(
-                "user_input",
-                {
+                response_data = {
                     "user_id": user_id,
                     "prompt": prompt,
                     "cleaned_prompt": cleaned_prompt,
                     "generation": generation["generation"],
                     "translations": generation["translations"],
-                },
-            )
+                    "usage": generation["usage"],
+                }
 
-            return Response(response_data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                save_interaction(
+                    "user_input",
+                    {
+                        "user_id": user_id,
+                        "prompt": prompt,
+                        "cleaned_prompt": cleaned_prompt,
+                        "generation": generation["generation"],
+                        "translations": generation["translations"],
+                    },
+                )
+
+                return Response(response_data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(f"Error in UserInputView: {str(e)}")
+            return Response({"error": "An unexpected error occurred"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class AIResponseView(APIView):
