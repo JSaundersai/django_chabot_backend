@@ -19,6 +19,9 @@ from langchain_groq import ChatGroq
 from openai import OpenAI
 from pydantic import BaseModel, Field
 
+from datetime import datetime
+from .mongodb_utils import get_db_handle
+
 #
 docs_to_use = []
 prompt = ""
@@ -370,32 +373,30 @@ def submit_feedback(request):
 
 
 def save_interaction(interaction_type, data):
-    file_path = os.path.join(os.path.dirname(__file__), "../data/interactions.json")
-
-    # Create the file if it doesn't exist
-    if not os.path.exists(file_path):
-        with open(file_path, "w") as f:
-            json.dump([], f)
-
-    # Read existing interactions
-    with open(file_path, "r") as f:
-        interactions = json.load(f)
-
-    # Create new interaction
-    new_interaction = {
-        "Date_time": datetime.now().isoformat(),
-        "Type": interaction_type,
-        "Data": data,
-    }
-
-    # Append new interaction
-    interactions.append(new_interaction)
-
-    # Write updated interactions back to file
-    with open(file_path, "w") as f:
-        json.dump(interactions, f, indent=4)
-
-    return {"message": f"{interaction_type} interaction saved successfully"}
-
-
-# Remove or comment out any unused functions
+    try:
+        # Get MongoDB connection
+        db, client = get_db_handle()
+        
+        # Get interactions collection
+        collection = db['interactions']
+        
+        # Create new interaction document
+        new_interaction = {
+            "Date_time": datetime.now().isoformat(),
+            "Type": interaction_type,  # Remove the parentheses
+            "Data": data
+        }
+        
+        # Insert the document
+        result = collection.insert_one(new_interaction)
+        
+        # Close the connection
+        client.close()
+        
+        return {
+            "message": f"{interaction_type} interaction saved successfully",
+            "id": str(result.inserted_id)
+        }
+    except Exception as e:
+        print(f"Error saving interaction to MongoDB: {e}")
+        raise

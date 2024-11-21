@@ -7,6 +7,7 @@ from django.http import HttpResponse, JsonResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from .mongodb_utils import get_db_handle
 
 from .chatbot import (
     generate_answer,
@@ -119,29 +120,16 @@ class CaptureSummaryView(APIView):
 class ViewSummaryView(APIView):
     def get(self, request):
         try:
-            file_path = os.path.join(
-                os.path.dirname(__file__), "../data/interactions.json"
-            )
-
-            if not os.path.exists(file_path):
-                return Response(
-                    {"error": "No data available"}, status=status.HTTP_404_NOT_FOUND
-                )
-
-            try:
-                with open(file_path, "r") as f:
-                    interactions = json.load(f)
-                    if not isinstance(interactions, list):
-                        return Response(
-                            {"error": "Invalid data format"},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                        )
-            except json.JSONDecodeError:
-                return Response(
-                    {"error": "Invalid JSON data"},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                )
-
+            # Get MongoDB connection
+            db, client = get_db_handle()
+            
+            # Get interactions collection
+            collection = db['interactions']
+            
+            # Fetch all interactions
+            interactions = list(collection.find())
+            
+            # Process interactions
             summaries = []
             for interaction in interactions:
                 try:
@@ -161,10 +149,12 @@ class ViewSummaryView(APIView):
                         }
                         summaries.append(summary)
                 except AttributeError:
-                    continue  # Skip malformed entries
-
+                    continue
+            
+            # Close the connection
+            client.close()
+            
             return Response(summaries, status=status.HTTP_200_OK)
-
         except Exception as e:
             return Response(
                 {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
