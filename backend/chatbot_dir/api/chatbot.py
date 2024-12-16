@@ -456,27 +456,28 @@ class ConversationMetaData:
         self._id = ObjectId()
         self.is_first_message = True
 
-    def add_message(self, role, content):
+    def add_message(self, role, content, target_language="all"):
         message = Message(role, content)
         self.messages.append(message)
 
         # translation layer
         if role == "assistant":
-            malay_translation = translate_en_to_ms(content)
-            chinese_translation = translate_en_to_cn(content)
+            translations = [{"language": "en", "text": content}]
+
+            # Only generate requested translations
+            if target_language in ["all", "ms-MY"]:
+                malay_translation = translate_en_to_ms(content)
+                translations.append(
+                    {"language": "ms-MY", "text": malay_translation.get("text", "")}
+                )
+            if target_language in ["all", "cn"]:
+                chinese_translation = translate_en_to_cn(content)
+                translations.append(
+                    {"language": "cn", "text": chinese_translation.get("text", "")}
+                )
 
             self.translations.append(
-                {
-                    "message_id": len(self.messages) - 1,
-                    "translations": [
-                        {"language": "en", "text": content},
-                        {
-                            "language": "ms-MY",
-                            "text": malay_translation.get("text", ""),
-                        },
-                        {"language": "cn", "text": chinese_translation.get("text", "")},
-                    ],
-                }
+                {"message_id": len(self.messages) - 1, "translations": translations}
             )
             return message
 
@@ -859,22 +860,41 @@ def update_database_confidence(comparison_result, docs_to_use):
 
 
 # async for translations
-async def generate_translations(generation):
+async def generate_translations(generation, target_language="all"):
+    translations = [{"language": "en", "text": generation}]
+
     with ThreadPoolExecutor() as executor:
-        # Run translations
-        malay_future = executor.submit(translate_en_to_ms, generation)
-        chinese_future = executor.submit(translate_en_to_cn, generation)
+        futures = []
 
-        # Gather results
-        translations = await asyncio.gather(
-            asyncio.wrap_future(malay_future), asyncio.wrap_future(chinese_future)
-        )
+        # Only run requested translations
+        if target_language in ["all", "ms-MY"]:
+            futures.append(
+                asyncio.wrap_future(executor.submit(translate_en_to_ms, generation))
+            )
+        if target_language in ["all", "cn"]:
+            futures.append(
+                asyncio.wrap_future(executor.submit(translate_en_to_cn, generation))
+            )
 
-        return [
-            {"language": "en", "text": generation},
-            {"language": "ms-MY", "text": translations[0].get("text", "")},
-            {"language": "cn", "text": translations[1].get("text", "")},
-        ]
+        if futures:
+            results = await asyncio.gather(*futures)
+
+            # Add translations based on which were requested
+            current_index = 0
+            if target_language in ["all", "ms-MY"]:
+                translations.append(
+                    {
+                        "language": "ms-MY",
+                        "text": results[current_index].get("text", ""),
+                    }
+                )
+                current_index += 1
+            if target_language in ["all", "cn"]:
+                translations.append(
+                    {"language": "cn", "text": results[current_index].get("text", "")}
+                )
+
+        return translations
 
 
 def translate_en_to_cn(input_text):
@@ -1026,7 +1046,7 @@ def generate_user_input(user_prompt):
 
 
 def generate_prompt_conversation(
-    user_prompt, conversation_id, admin_id, agent_id, user_id
+    user_prompt, conversation_id, admin_id, agent_id, user_id, target_language="all"
 ):
     start_time = time.time()
     logger.info("Starting prompt_conversation request")
@@ -1118,12 +1138,12 @@ def generate_prompt_conversation(
 
         # Generate translations asynchronously
         translation_start = time.time()
-        translations = asyncio.run(generate_translations(generation))
+        translations = asyncio.run(generate_translations(generation, target_language))
         logger.info(f"Translations completed in {time.time() - translation_start:.2f}s")
 
         # Save conversation
         db_start = time.time()
-        conversation.add_message("assistant", generation)
+        conversation.add_message("assistant", generation, target_language)
         save_conversation(conversation)
         logger.info(f"Database operation completed in {time.time() - db_start:.2f}s")
 

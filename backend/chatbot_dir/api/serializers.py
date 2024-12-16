@@ -28,12 +28,14 @@ class ConversationMetadataSerializer(serializers.Serializer):
 class UserInputSerializer(serializers.Serializer):
     prompt = serializers.CharField()
     user_id = serializers.CharField(required=False, allow_null=True, allow_blank=True)
+    target_language = serializers.CharField(required=False, default="all")
 
 
 class PromptConversationSerializer(serializers.Serializer):
     prompt = serializers.CharField(required=True)
     conversation_id = serializers.CharField(required=True)
     user_id = serializers.CharField(required=True)
+    target_language = serializers.CharField(required=False, default="all")
 
 
 class MessageDataSerializer(serializers.Serializer):

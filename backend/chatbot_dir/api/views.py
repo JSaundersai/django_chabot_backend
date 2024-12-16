@@ -49,12 +49,17 @@ class UserInputView(MongoDBMixin, APIView):
             # Extract data with default "None" for user_id
             prompt = serializer.validated_data["prompt"]
             user_id = serializer.validated_data.get("user_id", "None")
+            target_language = serializer.validated_data.get("target_language", "all")
 
             # Generate response
             generation_start = time.time()
-            logger.info("Starting AI response generation")
+            logger.info(
+                "Starting AI response generation with target language: {target_language}"
+            )
             cleaned_prompt = translate_and_clean(prompt)
-            generation = generate_user_input(cleaned_prompt)
+            generation = generate_user_input(
+                cleaned_prompt, target_language=target_language
+            )
             logger.info(
                 f"AI Generation completed in {time.time() - generation_start:.2f}s"
             )
@@ -131,16 +136,20 @@ class PromptConversationView(MongoDBMixin, APIView):
             prompt = serializer.validated_data["prompt"]
             conversation_id = serializer.validated_data["conversation_id"]
             user_id = serializer.validated_data["user_id"]
+            target_language = serializer.validated_data.get("target_language", "all")
 
             # Generate AI response with timing
             generation_start = time.time()
-            logger.info("Starting AI response generation")
+            logger.info(
+                "Starting AI response generation with target language: {target_language}"
+            )
             response = generate_prompt_conversation(
                 user_prompt=prompt,
                 conversation_id=conversation_id,
                 admin_id="",
                 agent_id="",
                 user_id="",
+                target_language=target_language,
             )
             logger.info(
                 f"AI Generation completed in {time.time() - generation_start:.2f}s"

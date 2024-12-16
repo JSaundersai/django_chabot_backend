@@ -32,9 +32,7 @@ DEBUG = True
 
 
 ALLOWED_HOSTS = [
-    "mjproapps.com",
-    "api.mjproapps.com",
-    "www.mjproapps.com",
+    "api-staging.mjproapps.com",
     "3.107.8.190",
     "54.206.216.180",
     "13.238.144.45",
@@ -43,12 +41,12 @@ ALLOWED_HOSTS = [
 ]
 
 
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = True
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_HSTS_PRELOAD = True
 
@@ -63,8 +61,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "corsheaders",
     "api.apps.ApiConfig",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -100,20 +98,14 @@ WSGI_APPLICATION = "chatbot_project.wsgi.application"
 
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
-    "https://mjproapps.com",
-    "https://www.mjproapps.com",
+    "https://api-staging.mjproapps.com",
 ]
-
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-# aded mongodb intergration
 # MongoDB settings
 MONGODB_USERNAME = os.getenv("MONGODB_USERNAME")
 MONGODB_PASSWORD = os.getenv("MONGODB_PASSWORD")
 MONGODB_CLUSTER = os.getenv("MONGODB_CLUSTER")
 MONGODB_DATABASE = os.getenv("MONGODB_DATABASE", "ChatbotDB")
+
 
 # Construct MongoDB URI
 MONGODB_URI = (
@@ -135,7 +127,6 @@ DATABASES = {
         },
     },
 }
-
 # added logging
 LOGGING = {
     "version": 1,
@@ -166,6 +157,7 @@ LOGGING = {
 }
 
 
+# Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
