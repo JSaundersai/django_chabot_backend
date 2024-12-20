@@ -542,7 +542,7 @@ def translate_and_clean(text):
     api_key = os.getenv("OPENAI_API_KEY")
     logger.info("OPENAI_API_KEY " + api_key)
 
-    client = OpenAI(api_key)
+    client = OpenAI(api_key=api_key)
 
     try:
         response = client.chat.completions.create(
