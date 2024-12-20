@@ -1061,11 +1061,10 @@ def generate_user_input(cleaned_prompt):#user_prompt it is already translate_and
     )
 
     # Generate translations asynchronously
-   # translations = asyncio.run(generate_translations(generation))
-#TODO: fix this
+    translations = asyncio.run(generate_translations(generation))
     return {
         "generation": generation,
-        #"translations": translations,
+        "translations": translations,
         "usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
     }
 
