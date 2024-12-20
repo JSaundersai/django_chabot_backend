@@ -93,26 +93,12 @@ class UserInputView(MongoDBMixin, APIView):
                 "generation": generation["generation"],
                 "translations": generation["translations"],
                 "usage": {
-                    "prompt_tokens": 'generation["usage"].get("prompt_tokens", 0)',
-                    "completion_tokens": 'generation["usage"].get("completion_tokens", 0)',
-                    "total_tokens": 'generation["usage"].get("total_tokens", 0)',
+                    "prompt_tokens": generation["usage"].get("prompt_tokens", 0),
+                    "completion_tokens": generation["usage"].get("completion_tokens", 0),
+                    "total_tokens": generation["usage"].get("total_tokens", 0),
                 },
             }
 
-            #response_data = {
-             #   "user_id": user_id,
-              #  "prompt": prompt,
-              #  "cleaned_prompt": cleaned_prompt,
-              #  "generation": generation["generation"],
-              #  "translations": generation["translations"],
-              #  "usage": {
-               #     "prompt_tokens": generation["usage"].get("prompt_tokens", 0),
-               #     "completion_tokens": generation["usage"].get(
-               #         "completion_tokens", 0
-               #     ),
-               #     "total_tokens": generation["usage"].get("total_tokens", 0),
-               # },
-           # }
 
             # Save to MongoDB
             #db_start = time.time()
