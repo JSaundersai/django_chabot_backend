@@ -76,10 +76,11 @@ class UserInputView(MongoDBMixin, APIView):
             generation_start = time.time()
             logger.info("Starting AI response user generation")
             cleaned_prompt = translate_and_clean(prompt)
-            generation = generate_user_input(cleaned_prompt)
-            logger.info(
-                f"AI Generation completed in {time.time() - generation_start:.2f}s"
-            )
+            #generation = generate_user_input(cleaned_prompt)
+           # logger.info(
+            #    f"AI Generation completed in {time.time() - generation_start:.2f}s"
+            #)
+            logger.info("cleaned_prompt" + cleaned_prompt)
 
             # Prepare MongoDB document and response data
             #response_data = {
