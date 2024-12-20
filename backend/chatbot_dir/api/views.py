@@ -75,30 +75,30 @@ class UserInputView(MongoDBMixin, APIView):
             )
 
             # Prepare MongoDB document and response data
-            response_data = {
-                "user_id": user_id,
-                "prompt": prompt,
-                "cleaned_prompt": cleaned_prompt,
-                "generation": generation["generation"],
-                "translations": generation["translations"],
-                "usage": {
-                    "prompt_tokens": generation["usage"].get("prompt_tokens", 0),
-                    "completion_tokens": generation["usage"].get(
-                        "completion_tokens", 0
-                    ),
-                    "total_tokens": generation["usage"].get("total_tokens", 0),
-                },
-            }
+            #response_data = {
+             #   "user_id": user_id,
+              #  "prompt": prompt,
+              #  "cleaned_prompt": cleaned_prompt,
+              #  "generation": generation["generation"],
+              #  "translations": generation["translations"],
+              #  "usage": {
+               #     "prompt_tokens": generation["usage"].get("prompt_tokens", 0),
+               #     "completion_tokens": generation["usage"].get(
+               #         "completion_tokens", 0
+               #     ),
+               #     "total_tokens": generation["usage"].get("total_tokens", 0),
+               # },
+           # }
 
             # Save to MongoDB
-            db_start = time.time()
-            logger.info("Starting MongoDB Write Operations")
-            db = self.get_db()
+            #db_start = time.time()
+            #logger.info("Starting MongoDB Write Operations")
+            #db = self.get_db()
 
-            user_input_doc = {**response_data, "timestamp": datetime.now().isoformat()}
+           # user_input_doc = {**response_data, "timestamp": datetime.now().isoformat()}
 
-            db.user_inputs.insert_one(user_input_doc)
-            logger.info(f"MongoDB operation completed in {time.time() - db_start:.2f}s")
+            #db.user_inputs.insert_one(user_input_doc)
+            #logger.info(f"MongoDB operation completed in {time.time() - db_start:.2f}s")
 
             total_time = time.time() - start_time
             logger.info(f"Total request processing time: {total_time:.2f}s")
@@ -157,7 +157,7 @@ class PromptConversationView(MongoDBMixin, APIView):
 
             # Generate AI response with timing
             generation_start = time.time()
-            logger.info("Starting AI response generation")
+            logger.info("Starting AI response conversation generation")
             response = generate_prompt_conversation(
                 user_prompt=prompt,
                 conversation_id=conversation_id,
@@ -170,21 +170,21 @@ class PromptConversationView(MongoDBMixin, APIView):
             )
 
             # MongoDB operations with timing
-            db_start = time.time()
-            logger.info("Starting MongoDB Write Operations")
-            db = self.get_db()
-            conversation_data = {
-                "conversation_id": conversation_id,
-                "prompt": prompt,
-                "generation": response["generation"],
-                "user_id": user_id,
-                "translations": response.get("translations", []),
-                "timestamp": datetime.now().isoformat(),
-            }
+            # db_start = time.time()
+            # logger.info("Starting MongoDB Write Operations")
+            # db = self.get_db()
+            # conversation_data = {
+              #   "conversation_id": conversation_id,
+                # "prompt": prompt,
+               #  "generation": response["generation"],
+               #  "user_id": user_id,
+                # "translations": response.get("translations", []),
+                # "timestamp": datetime.now().isoformat(),
+            # }
 
             # Insert as new document
-            db.conversations.insert_one(conversation_data)
-            logger.info(f"MongoDB operation completed in {time.time() - db_start:.2f}s")
+           #  db.conversations.insert_one(conversation_data)
+            # logger.info(f"MongoDB operation completed in {time.time() - db_start:.2f}s")
 
             # Prepare response data
             response_data = {
