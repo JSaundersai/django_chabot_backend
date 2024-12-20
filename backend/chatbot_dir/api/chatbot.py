@@ -1042,8 +1042,7 @@ def generate_user_input(cleaned_prompt):#user_prompt it is already translate_and
     # Get relevant documents
     docs_retrieve = retriever.get_relevant_documents(cleaned_prompt)
     docs_to_use = []
-    logger.info("KAKO "+  str(docs_retrieve))
-
+    logger.info(f"KAKO {docs_retrieve}")
     # Filter documents
     for doc in docs_retrieve:
         relevance_score = retrieval_grader.invoke(
