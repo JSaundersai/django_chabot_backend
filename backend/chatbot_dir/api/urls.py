@@ -4,15 +4,17 @@ from django.urls import path
 from django.views.decorators.cache import cache_page
 
 from .views import (
-    CaptureFeedbackView,
-    CompleteConversationsView,
-    PromptConversationView,
     UserInputView,
+    #CaptureFeedbackView,
+    #CompleteConversationsView,
+    #PromptConversationView,
 )
 
 urlpatterns = [
-    path("user_input/", UserInputView.as_view(), name="user_input"),
-    path(
+    path("user_input/", 
+        UserInputView.as_view(),
+        name="user_input"),
+   """ path(
         "prompt_conversation/",
         PromptConversationView.as_view(),
         name="prompt_conversation",
@@ -22,5 +24,5 @@ urlpatterns = [
         cache_page(60 * 5)(CompleteConversationsView.as_view()),  # Cache for 5 minutes
         name="complete_conversations",
     ),
-    path("capture_feedback/", CaptureFeedbackView.as_view(), name="capture_feedback"),
+    path("capture_feedback/", CaptureFeedbackView.as_view(), name="capture_feedback"),"""
 ]
