@@ -5,9 +5,9 @@ from django.views.decorators.cache import cache_page
 
 from .views import (
     UserInputView,
-    #CaptureFeedbackView,
-    #CompleteConversationsView,
-    #PromptConversationView,
+    CaptureFeedbackView,
+    CompleteConversationsView,
+    PromptConversationView,
 )
 
 urlpatterns = [
