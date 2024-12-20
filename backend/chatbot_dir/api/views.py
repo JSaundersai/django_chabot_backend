@@ -84,7 +84,7 @@ class UserInputView(MongoDBMixin, APIView):
             #    f"AI Generation completed in {time.time() - generation_start:.2f}s"
             #)
             logger.info("cleaned_prompt" + cleaned_prompt)
-            logger.info("generation" + generation)
+            #logger.info("generation" + generation)
             # Prepare MongoDB document and response data
             #response_data = {
              #   "user_id": user_id,
@@ -127,8 +127,10 @@ class UserInputView(MongoDBMixin, APIView):
             if db is not None:
                 self.cleanup_db_connection(db)
             #compare_memory(memory_snapshot)
-            gc.collect()
-            del generation
+            #gc.collect()
+            #del generation
+            logger.info("finally" + cleaned_prompt)
+
 
 
 class UserConversationsView(MongoDBMixin, APIView):
