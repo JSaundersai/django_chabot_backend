@@ -342,11 +342,10 @@ class MultiRetriever:
                 results = retriever.invoke(query)
                 all_results.extend(results)
                 #compare_memory(memory_snapshot)
-                logger.info("MultiRetrieverprocessed" + results)
-
             return all_results[:3]
         finally:
             gc.collect()
+            logger.info("MultiRetrieverprocessed: " + str(all_results))
 
     def invoke(self, query):
         return self.get_relevant_documents(query)
