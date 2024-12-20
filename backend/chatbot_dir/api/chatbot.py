@@ -1081,14 +1081,15 @@ def generate_prompt_conversation(
         #existing_conversation = db.conversations.find_one(
          #   {"session_id": conversation_id}
        # )
-       # is_first_message = not existing_conversation
+        existing_conversation = None
+        is_first_message = not existing_conversation
         # Initialize conversation
-       # conversation = ConversationMetaData(
-        #    session_id=conversation_id,
-        #    admin_id=admin_id,
-       #     agent_id=agent_id,
-       #     user_id=user_id,
-       # )
+        conversation = ConversationMetaData(
+            session_id=conversation_id,
+            admin_id=admin_id,
+            agent_id=agent_id,
+            user_id=user_id,
+        )
         conversation.is_first_message = is_first_message
 
         rag_prompt = get_rag_prompt_template(is_first_message)
