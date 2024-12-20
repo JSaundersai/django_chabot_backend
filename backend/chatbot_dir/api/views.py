@@ -79,7 +79,7 @@ class UserInputView(MongoDBMixin, APIView):
             cleaned_prompt = translate_and_clean(prompt)
             logger.info("cleaned_prompt "+cleaned_prompt)
 
-            #generation = generate_user_input(cleaned_prompt)
+            generation = generate_user_input(cleaned_prompt)
             #logger.info(
             #    f"AI Generation completed in {time.time() - generation_start:.2f}s"
             #)

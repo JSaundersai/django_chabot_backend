@@ -342,7 +342,7 @@ class MultiRetriever:
                 results = retriever.invoke(query)
                 all_results.extend(results)
                 #compare_memory(memory_snapshot)
-                logger.info("MultiRetrieverprocessed")
+                logger.info("MultiRetrieverprocessed" + results)
 
             return all_results[:3]
         finally:
