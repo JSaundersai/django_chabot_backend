@@ -127,7 +127,7 @@ class UserInputView(MongoDBMixin, APIView):
 
             #total_time = time.time() - start_time
            # logger.info(f"Total request processing time: {total_time:.2f}s")
-        return Response(response_data, status=status.HTTP_200_OK)
+            return Response(response_data, status=status.HTTP_200_OK)
 
             #return Response("Todo", status=status.HTTP_200_OK)
 
