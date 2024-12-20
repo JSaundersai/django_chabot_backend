@@ -843,7 +843,7 @@ def update_local_confidence(generation, confidence_diff):
         logger.error(f"Error updating local confidence: {str(e)}")
 
 
-def update_database_confidence(comparison_result, docs_to_use):
+    '''def update_database_confidence(comparison_result, docs_to_use):
     try:
         logger.info("Starting database confidence update")
         base_dir = os.path.join(os.path.dirname(__file__), "../data")
@@ -891,6 +891,7 @@ def update_database_confidence(comparison_result, docs_to_use):
 
     except Exception as e:
         logger.error(f"Error updating database confidence: {str(e)}")
+        '''
 
 
 # async for translations
@@ -1027,6 +1028,8 @@ def process_feedback_translation(feedback_data):
 
 # ahsfahssf this is an old functuion that will be removed in prod
 def generate_user_input(user_prompt):
+    logger.info("Processing generate_user_input request")
+
     # Clean and translate prompt
     cleaned_prompt = translate_and_clean(user_prompt)
 
@@ -1051,11 +1054,11 @@ def generate_user_input(user_prompt):
     )
 
     # Generate translations asynchronously
-    translations = asyncio.run(generate_translations(generation))
-
+   # translations = asyncio.run(generate_translations(generation))
+#TODO: fix this
     return {
         "generation": generation,
-        "translations": translations,
+        #"translations": translations,
         "usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
     }
 
