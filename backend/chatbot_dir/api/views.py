@@ -86,6 +86,20 @@ class UserInputView(MongoDBMixin, APIView):
             logger.info("cleaned_prompt" + cleaned_prompt)
             #logger.info("generation" + generation)
             # Prepare MongoDB document and response data
+
+            response_data = {
+                "user_id": 'user_id',
+                "prompt": 'prompt',
+                "cleaned_prompt": 'cleaned_prompt',
+                "generation": 'generation["generation"]',
+                "translations": 'generation["translations"]',
+                "usage": {
+                    "prompt_tokens": 'generation["usage"].get("prompt_tokens", 0)',
+                    "completion_tokens": 'generation["usage"].get("completion_tokens", 0)',
+                    "total_tokens": 'generation["usage"].get("total_tokens", 0)',
+                },
+            }
+
             #response_data = {
              #   "user_id": user_id,
               #  "prompt": prompt,
@@ -113,12 +127,14 @@ class UserInputView(MongoDBMixin, APIView):
 
             #total_time = time.time() - start_time
            # logger.info(f"Total request processing time: {total_time:.2f}s")
-            # return Response(response_data, status=status.HTTP_200_OK)
+        return Response(response_data, status=status.HTTP_200_OK)
 
-            return Response("Todo", status=status.HTTP_200_OK)
+            #return Response("Todo", status=status.HTTP_200_OK)
 
         except Exception as e:
             logger.error(f"Error processing request: {str(e)}")
+            logger.error(f"Exception type: {type(e)}, Exception value: {e}")
+
             return Response(
                 {"error": f"Request processing failed: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
