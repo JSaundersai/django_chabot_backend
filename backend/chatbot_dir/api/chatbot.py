@@ -536,9 +536,13 @@ class ConversationMetaData:
 
 # this is the OPENAI translate function
 def translate_and_clean(text):
-    memory_snapshot = monitor_memory()
+    #memory_snapshot = monitor_memory()
+    logger.info("translate_and_clean")
+
     api_key = os.getenv("OPENAI_API_KEY")
-    client = OpenAI(api_key=api_key)
+    logger.info("OPENAI_API_KEY " + api_key)
+
+    client = OpenAI(api_key)
 
     try:
         response = client.chat.completions.create(
