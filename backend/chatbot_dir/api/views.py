@@ -75,12 +75,12 @@ class UserInputView(MongoDBMixin, APIView):
             # Generate response
             generation_start = time.time()
             logger.info("Starting AI response user generation")
-            cleaned_prompt = translate_and_clean(prompt)
+            #cleaned_prompt = translate_and_clean(prompt)
             #generation = generate_user_input(cleaned_prompt)
            # logger.info(
             #    f"AI Generation completed in {time.time() - generation_start:.2f}s"
             #)
-            logger.info("cleaned_prompt" + cleaned_prompt)
+           # logger.info("cleaned_prompt" + cleaned_prompt)
 
             # Prepare MongoDB document and response data
             #response_data = {
@@ -108,10 +108,11 @@ class UserInputView(MongoDBMixin, APIView):
             #db.user_inputs.insert_one(user_input_doc)
             #logger.info(f"MongoDB operation completed in {time.time() - db_start:.2f}s")
 
-            total_time = time.time() - start_time
-            logger.info(f"Total request processing time: {total_time:.2f}s")
+            #total_time = time.time() - start_time
+           # logger.info(f"Total request processing time: {total_time:.2f}s")
+            # return Response(response_data, status=status.HTTP_200_OK)
 
-            return Response(response_data, status=status.HTTP_200_OK)
+            return Response("Todo", status=status.HTTP_200_OK)
 
         except Exception as e:
             logger.error(f"Error processing request: {str(e)}")

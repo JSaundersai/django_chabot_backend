@@ -24,6 +24,5 @@ python-dotenv==1.0.1
 uvicorn==0.31.0
 openai==1.51.2
 dnspython==2.6.1
-pymongo==3.11.4
 sqlparse==0.2.4
 

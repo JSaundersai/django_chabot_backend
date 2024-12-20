@@ -1028,7 +1028,7 @@ def process_feedback_translation(feedback_data):
 
 # ahsfahssf this is an old functuion that will be removed in prod
 def generate_user_input(user_prompt):
-    logger.info("Processing generate_user_input request")
+    logger.info("Processing feedback translation")
 
     # Clean and translate prompt
     cleaned_prompt = translate_and_clean(user_prompt)
