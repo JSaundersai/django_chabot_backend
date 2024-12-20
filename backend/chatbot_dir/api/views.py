@@ -83,7 +83,7 @@ class UserInputView(MongoDBMixin, APIView):
             #logger.info(
             #    f"AI Generation completed in {time.time() - generation_start:.2f}s"
             #)
-            logger.info("generation" + generation)
+            #logger.info("generation" + generation)
             # Prepare MongoDB document and response data
 
             response_data = {
