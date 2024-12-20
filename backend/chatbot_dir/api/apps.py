@@ -13,7 +13,7 @@ class ApiConfig(AppConfig):
         try:
             from .views import create_feedback_indexes
 
-            create_feedback_indexes()
-            logger.info("MongoDB indexes created successfully on startup")
+            #create_feedback_indexes()
+            #logger.info("MongoDB indexes created successfully on startup")
         except Exception as e:
             logger.error(f"Failed to create indexes on startup: {str(e)}")

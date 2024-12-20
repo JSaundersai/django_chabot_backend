@@ -1069,18 +1069,18 @@ def generate_prompt_conversation(
 
     try:
         # this is a check for the conversation to remove Dear player
-        db = get_mongodb_client()
-        existing_conversation = db.conversations.find_one(
-            {"session_id": conversation_id}
-        )
-        is_first_message = not existing_conversation
+       # db = get_mongodb_client()
+        #existing_conversation = db.conversations.find_one(
+         #   {"session_id": conversation_id}
+       # )
+       # is_first_message = not existing_conversation
         # Initialize conversation
-        conversation = ConversationMetaData(
-            session_id=conversation_id,
-            admin_id=admin_id,
-            agent_id=agent_id,
-            user_id=user_id,
-        )
+       # conversation = ConversationMetaData(
+        #    session_id=conversation_id,
+        #    admin_id=admin_id,
+       #     agent_id=agent_id,
+       #     user_id=user_id,
+       # )
         conversation.is_first_message = is_first_message
 
         rag_prompt = get_rag_prompt_template(is_first_message)
@@ -1128,25 +1128,25 @@ def generate_prompt_conversation(
 
         # this is where the self learning comes in, Its rough but will be worked on over time
         logger.info("Starting self-learning comparison")
-        db = get_mongodb_client()
-        relevant_feedbacks = get_relevant_feedback_data(cleaned_prompt, db)
+        #db = get_mongodb_client()
+        #relevant_feedbacks = get_relevant_feedback_data(cleaned_prompt, db)
 
-        if relevant_feedbacks:
-            logger.info(f"Found {len(relevant_feedbacks)} relevant feedback answers")
-            comparison_result = compare_answers(
-                generation, relevant_feedbacks, docs_to_use
-            )
+      # if relevant_feedbacks:
+       #     logger.info(f"Found {len(relevant_feedbacks)} relevant feedback answers")
+       #     comparison_result = compare_answers(
+       #         generation, relevant_feedbacks, docs_to_use
+       #     )
 
-            if comparison_result and comparison_result["better_answer"] == "feedback":
-                logger.info("Using feedback answer with higher confidence")
-                generation = comparison_result["best_feedback"]["correct_answer"]
-                update_database_confidence(comparison_result, docs_to_use)
-            else:
-                logger.info("Generated answer maintained, updating confidence")
-                update_local_confidence(
-                    generation, comparison_result["confidence_diff"]
-                )
-
+       #     if comparison_result and comparison_result["better_answer"] == "feedback":
+       #         logger.info("Using feedback answer with higher confidence")
+        #        generation = comparison_result["best_feedback"]["correct_answer"]
+        #        update_database_confidence(comparison_result, docs_to_use)
+        #    else:
+         #       logger.info("Generated answer maintained, updating confidence")
+         #       update_local_confidence(
+        #            generation, comparison_result["confidence_diff"]
+         #       )
+       
         # Calculate confidence
         confidence_result = confidence_grader.invoke(
             {"documents": format_docs(docs_to_use), "generation": generation}
@@ -1160,7 +1160,7 @@ def generate_prompt_conversation(
         # Save conversation
         db_start = time.time()
         conversation.add_message("assistant", generation)
-        save_conversation(conversation)
+        #save_conversation(conversation)
         logger.info(f"Database operation completed in {time.time() - db_start:.2f}s")
 
         total_time = time.time() - start_time
@@ -1181,64 +1181,64 @@ def generate_prompt_conversation(
         gc.collect()
 
 
-def save_conversation(conversation):
-    memory_snapshot = monitor_memory()
-    try:
-        db = get_mongodb_client()
-        conversations = db.conversations
-        conversation_dict = conversation.to_dict()
+#def save_conversation(conversation):
+  #  memory_snapshot = monitor_memory()
+    #try:
+       # db = get_mongodb_client()
+       # conversations = db.conversations
+       # conversation_dict = conversation.to_dict()
 
         # Remove _id to prevent duplicate key errors
-        if "_id" in conversation_dict:
-            del conversation_dict["_id"]
+       # if "_id" in conversation_dict:
+       #     del conversation_dict["_id"]
 
         # Update conversation state
-        conversation_dict["is_first_message"] = False
+      #  conversation_dict["is_first_message"] = False
 
         # MongoDB operation with error handling
-        result = conversations.update_one(
-            {"session_id": conversation.session_id},
-            {"$set": conversation_dict},
-            upsert=True,
-        )
+       # result = conversations.update_one(
+      #      {"session_id": conversation.session_id},
+       #     {"$set": conversation_dict},
+      #      upsert=True,
+      #  )
 
         # Verify operation success
-        if result.modified_count > 0 or result.upserted_id:
-            logger.info(f"Successfully saved conversation {conversation.session_id}")
-        else:
-            logger.warning(f"No changes made to conversation {conversation.session_id}")
+       # if result.modified_count > 0 or result.upserted_id:
+      #      logger.info(f"Successfully saved conversation {conversation.session_id}")
+       # else:
+       #     logger.warning(f"No changes made to conversation {conversation.session_id}")
 
-        return result
-    except Exception as e:
-        logger.error(f"Failed to save conversation: {str(e)}")
-        raise
-    finally:
+       # return result
+   # except Exception as e:
+       # logger.error(f"Failed to save conversation: {str(e)}")
+   #     raise
+   # finally:
         # Clean up and memory management
-        compare_memory(memory_snapshot)
-        gc.collect()
-        del conversation_dict  # Explicit cleanup of large dictionary
+       # compare_memory(memory_snapshot)
+        #gc.collect()
+        #del conversation_dict  # Explicit cleanup of large dictionary
 
 
-def save_interaction(interaction_type, data):
-    db = get_mongodb_client()
-    interactions = db.interactions
+#def save_interaction(interaction_type, data):
+   # db = get_mongodb_client()
+  #  interactions = db.interactions
 
-    new_interaction = {
-        "timestamp": datetime.now().isoformat(),
-        "type": interaction_type,
-        "data": data,
-    }
+  #  new_interaction = {
+  #      "timestamp": datetime.now().isoformat(),
+  #      "type": interaction_type,
+  #      "data": data,
+  #  }
 
-    interactions.insert_one(new_interaction)
-    return {"message": f"{interaction_type} interaction saved successfully"}
+  #  interactions.insert_one(new_interaction)
+  #  return {"message": f"{interaction_type} interaction saved successfully"}
 
 
-def handle_mongodb_operation(operation):
-    try:
-        return operation()
-    except Exception as e:
-        print(f"MongoDB operation failed: {str(e)}")
-        return None
+#def handle_mongodb_operation(operation):
+ #   try:
+  #      return operation()
+   # except Exception as e:
+    #    print(f"MongoDB operation failed: {str(e)}")
+     #   return None
 
 
 def get_relevant_feedback_data(cleaned_prompt, db):
