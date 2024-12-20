@@ -270,7 +270,7 @@ class CustomTextSplitter(RecursiveCharacterTextSplitter):
 
 # Process documents in batches
 def create_vector_store(documents, batch_size=500):
-    memory_snapshot = monitor_memory()
+    #memory_snapshot = monitor_memory()
     try:
         logger.info("Starting document splitting process")
         split_start = time.time()
@@ -304,7 +304,7 @@ def create_vector_store(documents, batch_size=500):
             f"Vector store creation completed in {time.time() - store_start:.2f}s"
         )
         vectorstores.append(store)
-        compare_memory(memory_snapshot)
+        #compare_memory(memory_snapshot)
         return store
 
     except Exception as e:
@@ -331,7 +331,7 @@ class MultiRetriever:
 
     def get_relevant_documents(self, query):
 
-        memory_snapshot = monitor_memory()
+        #memory_snapshot = monitor_memory()
         all_results = []
         try:
             for store in vectorstores:
@@ -593,7 +593,7 @@ def translate_and_clean(text):
         logger.error(f"Translation error: {str(e)}")
         return text
     finally:
-        compare_memory(memory_snapshot)
+        #compare_memory(memory_snapshot)
         gc.collect()
 
 
@@ -1031,15 +1031,17 @@ def process_feedback_translation(feedback_data):
 
 
 # ahsfahssf this is an old functuion that will be removed in prod
-def generate_user_input(user_prompt):
-    logger.info("Processing feedback translation")
+def generate_user_input(cleaned_prompt):#user_prompt it is already translate_and_clean
+    logger.info("Processing generate_user_input")
 
     # Clean and translate prompt
-    cleaned_prompt = translate_and_clean(user_prompt)
+    #
+    #cleaned_prompt = translate_and_clean(user_prompt) why you are calling again? GLAUCO
 
     # Get relevant documents
     docs_retrieve = retriever.get_relevant_documents(cleaned_prompt)
     docs_to_use = []
+    logger.info("KAKO "+docs_retrieve)
 
     # Filter documents
     for doc in docs_retrieve:
@@ -1070,7 +1072,7 @@ def generate_user_input(user_prompt):
 def generate_prompt_conversation(
     user_prompt, conversation_id, admin_id, agent_id, user_id
 ):
-    memory_snapshot = monitor_memory()
+    #memory_snapshot = monitor_memory()
     start_time = time.time()
     logger.info("Starting prompt_conversation request")
 
@@ -1184,7 +1186,7 @@ def generate_prompt_conversation(
         logger.error(f"Error in prompt_conversation: {str(e)}")
         raise
     finally:
-        compare_memory(memory_snapshot)
+        #compare_memory(memory_snapshot)
         gc.collect()
 
 

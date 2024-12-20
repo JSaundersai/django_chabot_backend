@@ -55,7 +55,7 @@ logger = logging.getLogger(__name__)
 
 class UserInputView(MongoDBMixin, APIView):
     def post(self, request):
-        memory_snapshot = monitor_memory()
+        #memory_snapshot = monitor_memory()
         db = None
         start_time = time.time()
         logger.info("Starting user_input request")
@@ -79,12 +79,12 @@ class UserInputView(MongoDBMixin, APIView):
             cleaned_prompt = translate_and_clean(prompt)
             logger.info("cleaned_prompt "+cleaned_prompt)
 
-            #generation = generate_user_input(cleaned_prompt)
+            generation = generate_user_input(cleaned_prompt)
            # logger.info(
             #    f"AI Generation completed in {time.time() - generation_start:.2f}s"
             #)
             logger.info("cleaned_prompt" + cleaned_prompt)
-            #logger.info("generation" + generation)
+            logger.info("generation" + generation)
             # Prepare MongoDB document and response data
             #response_data = {
              #   "user_id": user_id,
@@ -126,7 +126,7 @@ class UserInputView(MongoDBMixin, APIView):
         finally:
             if db is not None:
                 self.cleanup_db_connection(db)
-            compare_memory(memory_snapshot)
+            #compare_memory(memory_snapshot)
             gc.collect()
             del generation
 
@@ -147,7 +147,7 @@ class UserConversationsView(MongoDBMixin, APIView):
 # new api for start conversation
 class PromptConversationView(MongoDBMixin, APIView):
     def post(self, request):
-        memory_snapshot = monitor_memory()
+        #memory_snapshot = monitor_memory()
         db = None
         try:
             # Log start of request processing
@@ -221,7 +221,7 @@ class PromptConversationView(MongoDBMixin, APIView):
         finally:
             if db is not None:
                 self.cleanup_db_connection(db)
-            compare_memory(memory_snapshot)
+            #compare_memory(memory_snapshot)
             gc.collect()
             del response
 
